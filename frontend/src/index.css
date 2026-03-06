@@ -2,7 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #e2e8f0;
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: #e2e8f0;
+    @apply bg-slate-950 overflow-x-hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-950;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-700;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-slate-900/40 backdrop-blur-xl border border-white/5;
+  }
+  .glass-hover {
+    @apply hover:bg-slate-800/40 transition-all duration-300;
+  }
+  .glass-card {
+    @apply bg-slate-900/60 backdrop-blur-md border border-slate-800 hover:border-slate-700 transition-colors duration-300;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand via-brandAccent to-brandGlow;
+  }
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  }
+  
+  /* Split Pane Resizer */
+  .resizer {
+    background-color: transparent;
+    cursor: col-resize;
+    margin: 0;
+    width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    z-index: 20;
+  }
+  .resizer::after {
+    content: '';
+    height: 30px;
+    width: 4px;
+    border-radius: 4px;
+    background-color: rgb(30, 41, 59); /* Tailwind slate-800 */
+    transition: background-color 0.2s ease;
+  }
+  .resizer:hover, .resizer:active {
+    background-color: rgba(79, 70, 229, 0.05); /* brand-blue tint */
+  }
+  .resizer:hover::after, .resizer:active::after {
+    background-color: rgb(79, 70, 229); /* Tailwind brand color */
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+  }
 }

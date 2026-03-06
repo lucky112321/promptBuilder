@@ -1,6 +1,7 @@
 import api from '../api/client';
 import PricingCard from '../components/PricingCard';
 import { useAuth } from '../hooks/useAuth';
+import { motion } from 'framer-motion';
 
 const plans = [
   { key: 'starter', name: 'Starter', price: '₹49/month', features: ['50 prompts/day', 'Improved prompt quality'] },
@@ -45,12 +46,28 @@ export default function PricingPage() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-white">Choose your growth plan</h1>
-      <p className="mt-2 text-slate-400">Free plan includes 5 prompts/day. Upgrade anytime to scale faster.</p>
-      <div className="mt-8 grid gap-5 md:grid-cols-3">
-        {plans.map((plan) => (
-          <PricingCard key={plan.key} plan={plan} highlighted={plan.key === 'pro'} onSelect={handleSelect} />
+    <div className="py-10">
+      <div className="text-center mx-auto max-w-2xl mb-16">
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-extrabold text-white tracking-tight sm:text-5xl"
+        >
+          Choose your <span className="text-gradient">growth plan</span>
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mt-4 text-lg text-slate-400"
+        >
+          Free plan includes 5 prompts/day. Upgrade anytime to scale your output infinitely faster.
+        </motion.p>
+      </div>
+      
+      <div className="mt-8 grid gap-8 md:grid-cols-3 max-w-5xl mx-auto items-center">
+        {plans.map((plan, idx) => (
+          <PricingCard key={plan.key} plan={plan} index={idx} highlighted={plan.key === 'pro'} onSelect={handleSelect} />
         ))}
       </div>
     </div>

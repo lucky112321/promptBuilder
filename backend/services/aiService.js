@@ -1,39 +1,45 @@
-import OpenAI from 'openai';
+import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+dotenv.config();
 
 const SYSTEM_PROMPT =
-  'You are a world-class prompt engineer and CRO expert. Generate a structured, high-converting, detailed AI prompt optimized for results based on the user\'s idea and category.';
+  "You are a world-class prompt engineer and CRO expert. Generate a structured, high-converting, detailed AI prompt optimized for results based on the user's idea and category.";
 
-const openaiClient = process.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+const genAI = process.env.GEMINI_API_KEY
+  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   : null;
 
 const formatPromptOutput = (content) => {
   const cleaned = content.trim();
-  if (cleaned.startsWith('```')) {
+  if (cleaned.startsWith("```")) {
     return cleaned;
   }
   return `\`\`\`prompt\n${cleaned}\n\`\`\``;
 };
 
 export const generatePromptFromIdea = async ({ idea, category, plan }) => {
-  if (!openaiClient) {
+  if (!genAI) {
     return formatPromptOutput(
       `Goal: ${idea}\nCategory: ${category}\nTone: Persuasive, expert, conversion-focused\nStructure:\n1. Audience & intent\n2. Offer framing\n3. Step-by-step generation instructions\n4. Strong CTA\n5. Output format constraints\n\nPlan Tier Context: ${plan}`
     );
   }
 
-  const completion = await openaiClient.chat.completions.create({
-    model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      {
-        role: 'user',
-        content: `Idea: ${idea}\nCategory: ${category}\nUser plan: ${plan}\nReturn only the final prompt.`
-      }
-    ],
-    temperature: 0.8
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash"
   });
 
-  const output = completion.choices?.[0]?.message?.content || 'Unable to generate prompt.';
+  const result = await model.generateContent(`
+${SYSTEM_PROMPT}
+
+Idea: ${idea}
+Category: ${category}
+User plan: ${plan}
+
+Return ONLY the final prompt.
+`);
+
+  const output = result.response.text();
+
   return formatPromptOutput(output);
 };
