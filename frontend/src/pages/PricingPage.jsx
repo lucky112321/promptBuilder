@@ -3,15 +3,16 @@ import PricingCard from '../components/PricingCard';
 import { useAuth } from '../hooks/useAuth';
 
 const plans = [
-  { key: 'starter', name: 'Starter', price: '₹49/month', features: ['50 prompts/day', 'Improved prompt quality'] },
-  { key: 'pro', name: 'Pro', price: '₹149/month', features: ['Unlimited prompts', 'All premium categories', 'All prompt packs included'] },
-  { key: 'yearly', name: 'Yearly', price: '₹999/year', badge: '2 months free', features: ['Everything in Pro', 'Best value for growth'] }
+  { key: 'free', name: 'Free', price: '₹0/month', features: ['5 prompts/day', 'Basic categories', 'Community support'] },
+  { key: 'starter', name: 'Starter', price: '₹49/month', features: ['50 prompts/day', 'Improved prompt quality', 'Priority queue'] },
+  { key: 'pro', name: 'Pro', price: '₹149/month', badge: 'Save up to 20% yearly', features: ['Unlimited prompts', 'All premium categories', 'Prompt pack library', 'Best for teams'] }
 ];
 
 export default function PricingPage() {
   const { user, refreshProfile } = useAuth();
 
   const handleSelect = async (plan) => {
+    if (plan === 'free') return;
     if (!user) {
       alert('Please login first.');
       return;
@@ -45,14 +46,19 @@ export default function PricingPage() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-white">Choose your growth plan</h1>
-      <p className="mt-2 text-slate-400">Free plan includes 5 prompts/day. Upgrade anytime to scale faster.</p>
-      <div className="mt-8 grid gap-5 md:grid-cols-3">
+    <section className="space-y-8">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold tracking-tight text-[#F9FAFB]">Pricing built for growth</h1>
+        <p className="mx-auto mt-3 max-w-2xl text-gray-400">Choose the right plan now and scale your prompt operations without friction.</p>
+      </div>
+      <div className="mx-auto inline-flex rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+        Yearly Savings Available
+      </div>
+      <div className="grid gap-6 lg:grid-cols-3">
         {plans.map((plan) => (
           <PricingCard key={plan.key} plan={plan} highlighted={plan.key === 'pro'} onSelect={handleSelect} />
         ))}
       </div>
-    </div>
+    </section>
   );
 }
